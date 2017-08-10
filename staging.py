@@ -57,12 +57,12 @@ def add_alerts(input_str):
     #print 'example='
     #print 'example='
     #print 'example='
+    dict1.clear()
     item_arr=input_str.split('&')
     for item in item_arr:
         patch_arr = item.split('@')
         for patch in patch_arr:
             validatePatch(str(patch))
-        dict1.clear()
         createAlert(item)
 
 def validatePatch(input_str):
@@ -102,7 +102,7 @@ def createAlert(input_str):
         end_time = time.strptime(time_arr[1], "%H:%M")
         start_time=int(start_time.tm_hour)*60+int(start_time.tm_min)
         end_time=int(end_time.tm_hour)*60+int(end_time.tm_min)
-        temparr=[int(start_time),int(end_time)]
+        temparr=[proximate(5,int(start_time),True),proximate(5,int(end_time),True)]
         # Now for the day
         day_arr=item_arr[0].split('-')
         day_arr=[d.upper() for d in day_arr]
@@ -126,7 +126,6 @@ def createAlert(input_str):
                         dict1[d] = temparr # Add new entry
                     if daysflag==True:
                         dict1[d] = temparr # Add new entry
-        print dict1
         return True
 
 def compareNotification(now_time):
@@ -144,7 +143,7 @@ def compareNotification(now_time):
     else:
         return False
 def recoursion_check(next_time):
-    next_time=proximate(300,next_time)
+    next_time=proximate(300,next_time,False)
     temp_time = datetime.datetime.fromtimestamp(next_time).strftime('%H:%M')
     temp_time=time.strptime(temp_time, "%H:%M")
     temp_time=int(temp_time.tm_hour)*60+int(temp_time.tm_min)
@@ -156,14 +155,23 @@ def recoursion_check(next_time):
             print print_day
             return True
         else:
-            recoursion_check(next_time+600)
+            recoursion_check(next_time+300)
     else:
-        recoursion_check(next_time+600)
+        recoursion_check(next_time+300)
 
-def proximate(key,num):
-    num = round(num,0)
-    modo = num%key
-    return (num-modo+key)
+def proximate(key,num,bool2):
+
+	return_num=0
+	num = round(num,0)
+	modo = num%key
+	if modo==0:
+		return_num=num
+	else:
+		return_num = num-modo+key
+	#proximate also deals with midnight
+	if return_num >= 1440 and bool2:
+		return_num = return_num-key
+	return return_num
 
 if __name__ == "__main__":
     main()
