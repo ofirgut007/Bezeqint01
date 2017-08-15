@@ -36,27 +36,19 @@ def main():
 def reg_check(input_str):
     reg="([A-Z])\w+"
     #reg="^[\w-]+"
+    #TODO: add the regex that unit test team will provide here above.
     regex = re.compile(reg, re.IGNORECASE)
     result=regex.match(input_str)
     if result!=None:
         return True
-    else:
-        raise Exception("-E- this is an illegal argument")
-        return False
+    #else:
+    #    print "what"
+    #    raise Exception("-E- this is an illegal argument")
+    #    return False
+    return True
 
 def add_alerts(input_str):
-    #print 'example=SUN-THU@09:00-18:00&FRI@10:00-13:00'
-    #print 'example=SUN-SAT@09:00-18:00'
-    #print 'example=SUN&TUE'
-    #print 'example=09:00-14:00&16:00-18:00'
-    #print 'example=MAK'
-    #print 'example=sun'
-    #print 'example='
-    #print 'example='
-    #print 'example='
-    #print 'example='
-    #print 'example='
-    #print 'example='
+
     dict1.clear()
     item_arr=input_str.split('&')
     for item in item_arr:
@@ -77,6 +69,9 @@ def validatePatch(input_str):
         for d in day:
             if d.upper() not in constants.DAYS:
                 print "This is not a recognizable day"
+                raise ValueError(
+                    'The day must be one of the following: %s.'
+% ', '.join(constants.DAYS))
                 sys.exit(1)
     #valid = re.match('^[\w-]+$', str) is not None
 
@@ -91,10 +86,8 @@ def createAlert(input_str):
     item_arr=input_str.split('@')
     if len(item_arr)==1:
         if item_arr[0][:1].isdigit():
-            print "make an alert for all 7 days"
             createAlert("SUN-SAT@"+input_str)
         else:
-            print "make an alert for all 24 hours"
             createAlert(input_str+"@00:00-23:59")
     else:
         time_arr=item_arr[1].split('-')
