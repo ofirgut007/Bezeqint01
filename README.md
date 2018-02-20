@@ -1,6 +1,6 @@
 # Bezeqint01
 
- This is the __Bezeqint__ python example.
+ This is the __Bezeqint__ python example file.
 
 Please use the following examples:
 
